@@ -45,7 +45,7 @@ export const signUpAction = async (formData: FormData) => {
   if (user) {
     try {
       // Use service role client to bypass RLS policies
-      const supabaseAdmin = createClient({ admin: true });
+      const supabaseAdmin = await createClient();
 
       const { error: updateError } = await supabaseAdmin.from("users").insert({
         id: user.id,

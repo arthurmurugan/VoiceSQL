@@ -11,7 +11,7 @@ import { BarChart3, LineChart, PieChart } from "lucide-react";
 export default function AnalysisPage() {
   const supabase = createClient();
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTable, setSelectedTable] = useState("");

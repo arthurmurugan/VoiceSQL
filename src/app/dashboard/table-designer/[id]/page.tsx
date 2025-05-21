@@ -30,7 +30,7 @@ export default function TableDataView() {
   const router = useRouter();
   const tableId = params.id as string;
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [table, setTable] = useState(null);
   const [columns, setColumns] = useState<ColumnDefinition[]>([]);
   const [rows, setRows] = useState<DynamicEntity[]>([]);
@@ -412,13 +412,18 @@ export default function TableDataView() {
             );
           }
 
-          // If there are still missing required fields
-          if (missingRequiredFields.length > 0) {
-            setVoiceResponse(
-              `Error: Missing required fields: ${missingRequiredFields.join(", ")}. Please provide values for these fields.`,
+          // For all other missing required fields, set them to null
+          for (const fieldName of missingRequiredFields) {
+            data[fieldName] = null;
+            console.log(
+              `Setting ${fieldName} to null as it's required but missing`,
             );
-            return;
           }
+
+          // Log that we're automatically filling required fields
+          console.log(
+            "Automatically filled missing required fields with null values",
+          );
         }
 
         // Create the entity if we have data
@@ -785,6 +790,7 @@ export default function TableDataView() {
                 john@example.com"
               </li>
               <li>"Delete the record for Jane Smith"</li>
+              <li>"Delete a user"</li>
               {columns.some((col) => col.name === "salary") && (
                 <li>
                   "Add a new employee with name Alex Johnson, salary 75000, and

@@ -12,7 +12,7 @@ import { tableService } from "@/lib/table-service";
 export default function TablesPage() {
   const supabase = createClient();
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
