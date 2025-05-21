@@ -14,7 +14,7 @@ export default function TableAnalysisPage() {
   const router = useRouter();
   const tableId = params.id as string;
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [table, setTable] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
