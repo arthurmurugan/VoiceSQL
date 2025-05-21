@@ -30,7 +30,7 @@ export default function TableDataView() {
   const router = useRouter();
   const tableId = params.id as string;
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [table, setTable] = useState(null);
   const [columns, setColumns] = useState<ColumnDefinition[]>([]);
   const [rows, setRows] = useState<DynamicEntity[]>([]);

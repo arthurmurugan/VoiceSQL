@@ -19,7 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 export default function TableDesigner() {
   const supabase = createClient();
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [tableName, setTableName] = useState("");
   const [tableDescription, setTableDescription] = useState("");
   const [columns, setColumns] = useState<ColumnDefinition[]>([

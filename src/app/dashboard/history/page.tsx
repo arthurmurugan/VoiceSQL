@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 export default function HistoryPage() {
   const supabase = createClient();
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all"); // all, insert, update, delete
