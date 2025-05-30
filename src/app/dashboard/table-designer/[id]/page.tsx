@@ -252,7 +252,7 @@ export default function TableDataView() {
     setIsRecording(false);
   };
 
-  const processVoiceCommand = async (transcript) => {
+  const processVoiceCommand = async (transcript: string) => {
     setProcessingVoice(true);
     try {
       // In a real implementation, you would use Groq AI here
