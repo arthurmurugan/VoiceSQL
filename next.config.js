@@ -10,8 +10,20 @@ const nextConfig = {
   output: "standalone",
   experimental: {
     outputFileTracingExcludes: {
-      "*": ["**/tempobook/**"],
+      "*": [
+        "**/tempobook/**",
+        "**/tempobook/dynamic/**",
+        "**/tempobook/storyboards/**",
+      ],
     },
+  },
+  // Explicitly tell Next.js to ignore these directories
+  webpack: (config, { isServer }) => {
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: ["**/tempobook/**", "**/node_modules/**"],
+    };
+    return config;
   },
 };
 
