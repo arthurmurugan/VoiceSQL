@@ -45,13 +45,13 @@ export default function TableDesigner() {
     setColumns([...columns, { name: "", type: "string", required: false }]);
   };
 
-  const removeColumn = (index) => {
+  const removeColumn = (index: number) => {
     const newColumns = [...columns];
     newColumns.splice(index, 1);
     setColumns(newColumns);
   };
 
-  const updateColumn = (index, field, value) => {
+  const updateColumn = (index: number, field: string, value: any) => {
     const newColumns = [...columns];
     newColumns[index][field] = value;
     setColumns(newColumns);

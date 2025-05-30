@@ -4,7 +4,11 @@ import DashboardNavbar from "@/components/dashboard-navbar";
 import { Button } from "@/components/ui/button";
 import { createClient } from "../../../../../supabase/client";
 import { useState, useEffect } from "react";
-import { tableService } from "@/lib/table-service";
+import {
+  ColumnDefinition,
+  TableDefinition,
+  tableService,
+} from "@/lib/table-service";
 import { useParams, useRouter } from "next/navigation";
 import { BarChart3, LineChart, PieChart, ArrowLeft } from "lucide-react";
 
@@ -15,14 +19,14 @@ export default function TableAnalysisPage() {
   const tableId = params.id as string;
 
   const [user, setUser] = useState<any>(null);
-  const [table, setTable] = useState(null);
-  const [columns, setColumns] = useState([]);
-  const [rows, setRows] = useState([]);
+  const [table, setTable] = useState<TableDefinition | null>(null);
+  const [columns, setColumns] = useState<ColumnDefinition[]>([]);
+  const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [chartType, setChartType] = useState("pie"); // pie, bar, line
+  const [chartType, setChartType] = useState("pie"); // pie, bar, or line chart
   const [selectedColumn, setSelectedColumn] = useState("");
-  const [numericColumns, setNumericColumns] = useState([]);
+  const [numericColumns, setNumericColumns] = useState<ColumnDefinition[]>([]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -43,12 +47,13 @@ export default function TableAnalysisPage() {
     try {
       // Get table definition
       const tableData = await tableService.getTableById(tableId);
-      setTable(tableData);
-      setColumns(tableData.schema);
+      setTable(tableData as TableDefinition);
+      setColumns(tableData.schema as ColumnDefinition[]);
 
       // Find numeric columns for analysis
       const numCols = tableData.schema.filter(
-        (col) => col.type === "integer" || col.type === "float",
+        (col: ColumnDefinition) =>
+          col.type === "integer" || col.type === "float",
       );
       setNumericColumns(numCols);
       if (numCols.length > 0) {
@@ -60,7 +65,10 @@ export default function TableAnalysisPage() {
       setRows(entities);
     } catch (err) {
       console.error("Error fetching table data:", err);
-      setError("Failed to load table data: " + err.message);
+      setError(
+        "Failed to load table data: " +
+          (err instanceof Error ? err.message : String(err)),
+      );
     } finally {
       setLoading(false);
     }
@@ -91,7 +99,7 @@ export default function TableAnalysisPage() {
         : sorted[middle];
 
     // Mode
-    const counts = {};
+    const counts: { [key: number]: number } = {};
     let mode = values[0];
     let maxCount = 1;
 
@@ -175,7 +183,7 @@ export default function TableAnalysisPage() {
     }
 
     // For other columns, count occurrences
-    const counts = {};
+    const counts: { [key: string]: number } = {};
     for (const row of rows) {
       const value = String(row.data[selectedColumn] || "N/A");
       counts[value] = (counts[value] || 0) + 1;
@@ -217,7 +225,11 @@ export default function TableAnalysisPage() {
               <svg viewBox="0 0 100 100" className="w-full h-full">
                 {
                   data.reduce(
-                    (elements, item, i) => {
+                    (
+                      elements: { paths: React.ReactNode[]; total: number },
+                      item,
+                      i,
+                    ) => {
                       const percentage = (item.value / total) * 100;
                       const previousTotal = elements.total;
                       elements.total += percentage;
@@ -249,7 +261,10 @@ export default function TableAnalysisPage() {
 
                       return elements;
                     },
-                    { paths: [], total: 0 },
+                    { paths: [] as React.ReactNode[], total: 0 } as {
+                      paths: React.ReactNode[];
+                      total: number;
+                    },
                   ).paths
                 }
               </svg>

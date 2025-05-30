@@ -62,7 +62,7 @@ export default function TablesPage() {
     }
   };
 
-  const deleteTable = async (id) => {
+  const deleteTable = async (id: string) => {
     try {
       await tableService.deleteTable(id);
       fetchTables(); // Refresh the list
@@ -72,7 +72,7 @@ export default function TablesPage() {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       year: "numeric",

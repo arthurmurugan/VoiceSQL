@@ -80,34 +80,35 @@ export default function TableDataView() {
       setRows(entities);
 
       // Initialize newRow with empty values for each column
-      const emptyRow = {};
-      tableData.schema.forEach((col) => {
+      const emptyRow: Record<string, any> = {};
+      tableData.schema.forEach((col: ColumnDefinition) => {
         emptyRow[col.name] = col.default || "";
       });
       setNewRow(emptyRow);
     } catch (err) {
       console.error("Error fetching table data:", err);
-      setError("Failed to load table data: " + err.message);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError("Failed to load table data: " + errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (column, value) => {
+  const handleInputChange = (column: string, value: any) => {
     setNewRow((prev) => ({
       ...prev,
       [column]: value,
     }));
   };
 
-  const handleEditChange = (column, value) => {
+  const handleEditChange = (column: string, value: any) => {
     setEditData((prev) => ({
       ...prev,
       [column]: value,
     }));
   };
 
-  const startEditing = (row) => {
+  const startEditing = (row: any) => {
     setEditingRow(row.id);
     setEditData({ ...row.data });
   };
@@ -117,14 +118,15 @@ export default function TableDataView() {
     setEditData({});
   };
 
-  const saveEdit = async (id) => {
+  const saveEdit = async (id: string) => {
     try {
       await tableService.updateEntity(id, tableId, editData);
       setEditingRow(null);
       fetchTableData(); // Refresh data
     } catch (err) {
       console.error("Error updating row:", err);
-      setVoiceResponse(`Error: ${err.message}`);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setVoiceResponse(`Error: ${errorMessage}`);
     }
   };
 
@@ -136,7 +138,7 @@ export default function TableDataView() {
       });
 
       // Reset the form
-      const emptyRow = {};
+      const emptyRow: Record<string, any> = {};
       columns.forEach((col) => {
         emptyRow[col.name] = col.default || "";
       });
@@ -146,17 +148,19 @@ export default function TableDataView() {
       fetchTableData();
     } catch (err) {
       console.error("Error adding row:", err);
-      setVoiceResponse(`Error: ${err.message}`);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setVoiceResponse(`Error: ${errorMessage}`);
     }
   };
 
-  const deleteRow = async (id) => {
+  const deleteRow = async (id: string) => {
     try {
       await tableService.deleteEntity(id);
       fetchTableData(); // Refresh data
     } catch (err) {
       console.error("Error deleting row:", err);
-      setVoiceResponse(`Error: ${err.message}`);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setVoiceResponse(`Error: ${errorMessage}`);
     }
   };
 
@@ -168,7 +172,9 @@ export default function TableDataView() {
     }
   };
 
-  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null,
+  );
 
   const startRecording = async () => {
     setIsRecording(true);
@@ -183,7 +189,7 @@ export default function TableDataView() {
       const recorder = new MediaRecorder(stream);
       setMediaRecorder(recorder);
 
-      const audioChunks = [];
+      const audioChunks: BlobPart[] = [];
 
       // Store audio data as it becomes available
       recorder.addEventListener("dataavailable", (event) => {
@@ -211,7 +217,9 @@ export default function TableDataView() {
           processVoiceCommand(transcription);
         } catch (error) {
           console.error("Error processing audio:", error);
-          setVoiceResponse(`Error: Failed to process audio: ${error.message}`);
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          setVoiceResponse(`Error: Failed to process audio: ${errorMessage}`);
         } finally {
           // Stop all tracks to release the microphone
           stream.getTracks().forEach((track) => track.stop());
@@ -244,7 +252,7 @@ export default function TableDataView() {
     setIsRecording(false);
   };
 
-  const processVoiceCommand = async (transcript) => {
+  const processVoiceCommand = async (transcript: string) => {
     setProcessingVoice(true);
     try {
       // In a real implementation, you would use Groq AI here
@@ -521,7 +529,7 @@ export default function TableDataView() {
     }
   };
 
-  const formatValue = (value, type) => {
+  const formatValue = (value: any, type: string) => {
     if (value === null || value === undefined) return "";
 
     switch (type) {
