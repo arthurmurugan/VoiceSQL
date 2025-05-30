@@ -189,7 +189,7 @@ export default function TableDataView() {
       const recorder = new MediaRecorder(stream);
       setMediaRecorder(recorder);
 
-      const audioChunks = [];
+      const audioChunks: BlobPart[] = [];
 
       // Store audio data as it becomes available
       recorder.addEventListener("dataavailable", (event) => {
