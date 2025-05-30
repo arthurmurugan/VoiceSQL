@@ -12,7 +12,7 @@ export default function AnalysisPage() {
   const supabase = createClient();
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [tables, setTables] = useState([]);
+  const [tables, setTables] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTable, setSelectedTable] = useState("");
 
@@ -39,6 +39,7 @@ export default function AnalysisPage() {
       }
     } catch (err) {
       console.error("Error fetching tables:", err);
+      // Handle error gracefully without accessing properties directly
     } finally {
       setLoading(false);
     }

@@ -14,6 +14,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { tableService } from "@/lib/table-service";
 
 export default function HistoryPage() {
   const supabase = createClient();
@@ -23,8 +24,18 @@ export default function HistoryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all"); // all, insert, update, delete
 
+  // Define history item interface
+  interface HistoryItem {
+    id: string;
+    action: string;
+    table: string;
+    timestamp: string;
+    details: string;
+    command: string;
+  }
+
   // Mock history data - in a real app, this would come from the database
-  const [history, setHistory] = useState([
+  const [history, setHistory] = useState<HistoryItem[]>([
     {
       id: "1",
       action: "insert",
@@ -69,6 +80,8 @@ export default function HistoryPage() {
     },
   ]);
 
+  const [tableStats, setTableStats] = useState<Record<string, any>>({});
+
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -87,10 +100,14 @@ export default function HistoryPage() {
     try {
       // Get table definitions to map IDs to names
       const tableDefinitions = await tableService.getTables();
-      const tableMap = {};
-      tableDefinitions.forEach((table) => {
-        tableMap[table.id] = table.name;
-      });
+      const tableMap: Record<string, string> = {};
+      if (tableDefinitions && Array.isArray(tableDefinitions)) {
+        tableDefinitions.forEach((table) => {
+          if (table && table.id && table.name) {
+            tableMap[table.id] = table.name;
+          }
+        });
+      }
 
       // Get all entities with their history
       const { data: dynamicEntities, error } = await supabase
@@ -101,7 +118,7 @@ export default function HistoryPage() {
       if (error) throw error;
 
       // Format the history data
-      const historyItems = [];
+      const historyItems: HistoryItem[] = [];
 
       if (dynamicEntities && dynamicEntities.length > 0) {
         dynamicEntities.forEach((entity, index) => {
@@ -145,12 +162,12 @@ export default function HistoryPage() {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString();
   };
 
-  const getActionColor = (action) => {
+  const getActionColor = (action: string) => {
     switch (action) {
       case "insert":
         return "text-green-500";
@@ -163,7 +180,7 @@ export default function HistoryPage() {
     }
   };
 
-  const getActionIcon = (action) => {
+  const getActionIcon = (action: string) => {
     switch (action) {
       case "insert":
         return <span className="bg-green-500/20 p-1 rounded-full">+</span>;

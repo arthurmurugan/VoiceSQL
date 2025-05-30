@@ -81,7 +81,7 @@ export default function TableDataView() {
 
       // Initialize newRow with empty values for each column
       const emptyRow = {};
-      tableData.schema.forEach((col) => {
+      tableData.schema.forEach((col: ColumnDefinition) => {
         emptyRow[col.name] = col.default || "";
       });
       setNewRow(emptyRow);
@@ -93,21 +93,21 @@ export default function TableDataView() {
     }
   };
 
-  const handleInputChange = (column, value) => {
+  const handleInputChange = (column: string, value: any) => {
     setNewRow((prev) => ({
       ...prev,
       [column]: value,
     }));
   };
 
-  const handleEditChange = (column, value) => {
+  const handleEditChange = (column: string, value: any) => {
     setEditData((prev) => ({
       ...prev,
       [column]: value,
     }));
   };
 
-  const startEditing = (row) => {
+  const startEditing = (row: any) => {
     setEditingRow(row.id);
     setEditData({ ...row.data });
   };
@@ -117,7 +117,7 @@ export default function TableDataView() {
     setEditData({});
   };
 
-  const saveEdit = async (id) => {
+  const saveEdit = async (id: string) => {
     try {
       await tableService.updateEntity(id, tableId, editData);
       setEditingRow(null);
@@ -150,7 +150,7 @@ export default function TableDataView() {
     }
   };
 
-  const deleteRow = async (id) => {
+  const deleteRow = async (id: string) => {
     try {
       await tableService.deleteEntity(id);
       fetchTableData(); // Refresh data
@@ -521,7 +521,7 @@ export default function TableDataView() {
     }
   };
 
-  const formatValue = (value, type) => {
+  const formatValue = (value: any, type: string) => {
     if (value === null || value === undefined) return "";
 
     switch (type) {
