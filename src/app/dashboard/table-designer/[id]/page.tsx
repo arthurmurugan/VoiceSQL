@@ -80,14 +80,15 @@ export default function TableDataView() {
       setRows(entities);
 
       // Initialize newRow with empty values for each column
-      const emptyRow = {};
+      const emptyRow: Record<string, any> = {};
       tableData.schema.forEach((col: ColumnDefinition) => {
         emptyRow[col.name] = col.default || "";
       });
       setNewRow(emptyRow);
     } catch (err) {
       console.error("Error fetching table data:", err);
-      setError("Failed to load table data: " + err.message);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError("Failed to load table data: " + errorMessage);
     } finally {
       setLoading(false);
     }
@@ -124,7 +125,8 @@ export default function TableDataView() {
       fetchTableData(); // Refresh data
     } catch (err) {
       console.error("Error updating row:", err);
-      setVoiceResponse(`Error: ${err.message}`);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setVoiceResponse(`Error: ${errorMessage}`);
     }
   };
 
@@ -136,7 +138,7 @@ export default function TableDataView() {
       });
 
       // Reset the form
-      const emptyRow = {};
+      const emptyRow: Record<string, any> = {};
       columns.forEach((col) => {
         emptyRow[col.name] = col.default || "";
       });
@@ -146,7 +148,8 @@ export default function TableDataView() {
       fetchTableData();
     } catch (err) {
       console.error("Error adding row:", err);
-      setVoiceResponse(`Error: ${err.message}`);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setVoiceResponse(`Error: ${errorMessage}`);
     }
   };
 
@@ -156,7 +159,8 @@ export default function TableDataView() {
       fetchTableData(); // Refresh data
     } catch (err) {
       console.error("Error deleting row:", err);
-      setVoiceResponse(`Error: ${err.message}`);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setVoiceResponse(`Error: ${errorMessage}`);
     }
   };
 
@@ -168,7 +172,9 @@ export default function TableDataView() {
     }
   };
 
-  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null,
+  );
 
   const startRecording = async () => {
     setIsRecording(true);
@@ -211,7 +217,9 @@ export default function TableDataView() {
           processVoiceCommand(transcription);
         } catch (error) {
           console.error("Error processing audio:", error);
-          setVoiceResponse(`Error: Failed to process audio: ${error.message}`);
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          setVoiceResponse(`Error: Failed to process audio: ${errorMessage}`);
         } finally {
           // Stop all tracks to release the microphone
           stream.getTracks().forEach((track) => track.stop());
